@@ -1,7 +1,7 @@
-import fs from 'fs'
-import path from 'path'
+const fs = require('fs')
+const path = require('path')
+const esbuild = require('esbuild')
 import { spawn } from 'child_process'
-import esbuild from 'esbuild'
 
 export function match(filePath: string): boolean {
   const ext = path.extname(filePath)
@@ -44,7 +44,7 @@ export function findPaths(dir: string): string[] {
         if (filePath === 'node_modules') {
           continue
         }
-        find(filePath)
+        find(path.resolve(dir, filePath))
       }
     }
   }
@@ -60,7 +60,7 @@ export async function runFile(filePath: string): Promise<string> {
     sourcemap: true,
     allowOverwrite: true
   })
-  filePath = filePath.split(path.sep).pop()
+  filePath = filePath.split(path.sep).pop() as string
   const ext = path.extname(filePath)
   const fileName = filePath.slice(0, filePath.length - ext.length) + '.js'
   const run = spawn(process.execPath, [

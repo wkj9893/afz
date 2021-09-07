@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { findPaths, runFile } from './src'
 import { lightGreen, lightRed } from './src/color'
+import { assert, assertEqual } from './src/assert'
 
 async function cli() {
   const args = process.argv.slice(2)
@@ -53,3 +54,5 @@ cli()
       ).toFixed(2)}s`
     )
   })
+
+export { assert, assertEqual }

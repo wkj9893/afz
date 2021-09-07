@@ -1,11 +1,11 @@
-function isKeyedCollection(x: unknown): x is Set<unknown> {
-  return [Symbol.iterator, 'size'].every((k) => k in (x as Set<unknown>))
+function isKeyedCollection(x: any): boolean {
+  return [Symbol.iterator, 'size'].every((k) => k in x)
 }
 
-export function equal(a: unknown, b: unknown): boolean {
+export function equal(a: any, b: any): boolean {
   const seen = new Map()
   return compare(a, b)
-  function compare(a: unknown, b: unknown): boolean {
+  function compare(a: any, b: any): boolean {
     // Have to render RegExp & Date for string comparison
     // unless it's mistreated as object
     if (

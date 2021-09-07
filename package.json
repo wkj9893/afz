@@ -1,8 +1,9 @@
 {
   "name": "afz",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "test",
   "main": "index.js",
+  "types": "index.d.ts",
   "author": "wkj",
   "license": "MIT",
   "homepage": "https://github.com/wkj9893/afz#readme",
@@ -19,14 +20,15 @@
     "test": "rm -rf out && node index.js",
     "format": "prettier --write '**/*.ts'",
     "watch": "esbuild index.ts --bundle --platform=node --watch --outfile=index.js --external:esbuild",
-    "build": "esbuild index.ts --bundle --platform=node --minify --outfile=index.js --external:esbuild"
+    "build": "esbuild index.ts --bundle --platform=node --outfile=index.js --external:esbuild"
   },
   "dependencies": {
     "esbuild": "^0.12.24"
   },
   "devDependencies": {
     "@types/node": "^16.7.10",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "typescript": "^4.4.2"
   },
   "repository": {
     "type": "git",

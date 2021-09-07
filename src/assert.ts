@@ -1,4 +1,3 @@
-import { lightGreen } from './color'
 import { equal } from './equal'
 
 class AssertionError extends Error {
