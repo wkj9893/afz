@@ -1,6 +1,6 @@
 {
   "name": "afz",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "test",
   "main": "index.js",
   "types": "index.d.ts",
@@ -11,7 +11,8 @@
     "afz": "index.js"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "engines": {
     "node": ">=12.12.0"
@@ -20,7 +21,8 @@
     "test": "rm -rf out && node index.js",
     "format": "prettier --write '**/*.ts'",
     "watch": "esbuild index.ts --bundle --platform=node --watch --outfile=index.js --external:esbuild",
-    "build": "esbuild index.ts --bundle --platform=node --outfile=index.js --external:esbuild"
+    "build": "esbuild index.ts --bundle --platform=node --outfile=index.js --external:esbuild",
+    "prepublish": "pnpm build"
   },
   "dependencies": {
     "esbuild": "^0.12.24"

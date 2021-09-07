@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import { findPaths, runFile } from './src'
+import { findPaths, runFile, runFileSync } from './src'
 import { lightGreen, lightRed } from './src/color'
 import { assert, assertEqual } from './src/assert'
+import path = require('path')
 
 async function cli() {
   const args = process.argv.slice(2)
@@ -30,12 +31,23 @@ async function cli() {
     console.log(
       '<files>...         List of file names to run(js,mjs,ts,jsx,tsx),works like ts-node'
     )
+  } else {
+    for (const arg of args) {
+      console.log()
+      console.log(`run ${arg}`)
+      const filepath = path.resolve(process.cwd(), arg)
+      runFileSync(filepath)
+    }
+    return 'run'
   }
 }
 
 const startTime = performance.now()
 cli()
-  .then(() => {
+  .then((val) => {
+    if (val === 'run') {
+      return
+    }
     console.log()
     console.log(
       `test result: ${lightGreen('ok')}.      finished in ${(

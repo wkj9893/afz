@@ -1,7 +1,7 @@
-const fs = require('fs')
-const path = require('path')
-const esbuild = require('esbuild')
-import { spawn } from 'child_process'
+import fs = require('fs')
+import path = require('path')
+import esbuild = require('esbuild')
+import { spawn, spawnSync } from 'child_process'
 
 export function match(filePath: string): boolean {
   const ext = path.extname(filePath)
@@ -51,7 +51,6 @@ export function findPaths(dir: string): string[] {
 }
 
 export async function runFile(filePath: string): Promise<string> {
-  console.log(`${path.relative(process.cwd(), filePath)}`)
   await esbuild.build({
     entryPoints: [filePath],
     platform: 'node',
@@ -87,4 +86,23 @@ export async function runFile(filePath: string): Promise<string> {
       resolve('')
     })
   })
+}
+
+export function runFileSync(filePath: string) {
+  esbuild.buildSync({
+    entryPoints: [filePath],
+    platform: 'node',
+    bundle: true,
+    outdir: path.resolve(__dirname, 'out'),
+    sourcemap: true,
+    allowOverwrite: true
+  })
+  filePath = filePath.split(path.sep).pop() as string
+  const ext = path.extname(filePath)
+  const fileName = filePath.slice(0, filePath.length - ext.length) + '.js'
+  spawnSync(
+    process.execPath,
+    ['--enable-source-maps', path.resolve(__dirname, 'out', fileName)],
+    { stdio: 'inherit' }
+  )
 }
