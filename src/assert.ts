@@ -17,5 +17,7 @@ export function assertEqual(actual: unknown, expected: unknown, msg = '') {
   if (equal(actual, expected)) {
     return
   }
-  throw new AssertionError(`    actual: ${actual}     expected: ${expected}`)
+  throw new AssertionError(
+    `    actual: ${actual}     expected: ${expected},${msg}`
+  )
 }

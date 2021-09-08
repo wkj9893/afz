@@ -3,6 +3,7 @@ import { findPaths, runFile, runFileSync } from './src'
 import { lightGreen, lightRed } from './src/color'
 import { assert, assertEqual } from './src/assert'
 import path = require('path')
+import { version } from './package.json'
 
 async function cli() {
   const args = process.argv.slice(2)
@@ -14,6 +15,9 @@ async function cli() {
     for (const filepath of filepaths) {
       await runFile(filepath)
     }
+    return 'test'
+  } else if (args[0] === '-v' || args[0] === '--version') {
+    console.log(`v${version}`)
   } else if (args[0] === '-h' || args[0] === '--help') {
     console.log('afz')
     console.log('Run tests using esbuild and nodejs\n')
@@ -33,19 +37,16 @@ async function cli() {
     )
   } else {
     for (const arg of args) {
-      console.log()
-      console.log(`run ${arg}`)
       const filepath = path.resolve(process.cwd(), arg)
       runFileSync(filepath)
     }
-    return 'run'
   }
 }
 
 const startTime = performance.now()
 cli()
   .then((val) => {
-    if (val === 'run') {
+    if (val !== 'test') {
       return
     }
     console.log()

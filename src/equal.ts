@@ -51,9 +51,7 @@ export function equal(a: unknown, b: unknown): boolean {
         }
 
         let unmatchedEntries = a.size
-        // @ts-ignore
         for (const [aKey, aValue] of a.entries()) {
-          // @ts-ignore
           for (const [bKey, bValue] of b.entries()) {
             /* Given that Map keys can be references, we need
              * to ensure that they are also deeply equal */
@@ -69,8 +67,8 @@ export function equal(a: unknown, b: unknown): boolean {
         ...Object.getOwnPropertyNames(merged),
         ...Object.getOwnPropertySymbols(merged)
       ]) {
-        // @ts-ignore
-        if (!compare(a[key], b[key])) {
+        type Key = keyof typeof merged
+        if (!compare(a && a[key as Key], b && b[key as Key])) {
           return false
         }
         if ((key in a && !(key in b)) || (key in b && !(key in a))) {
