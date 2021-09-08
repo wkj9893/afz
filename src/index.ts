@@ -57,7 +57,8 @@ export async function runFile(filePath: string): Promise<string> {
     bundle: true,
     outdir: path.resolve(__dirname, 'out'),
     sourcemap: true,
-    allowOverwrite: true
+    allowOverwrite: true,
+    external: ['esbuild']
   })
   filePath = filePath.split(path.sep).pop() as string
   const ext = path.extname(filePath)
@@ -95,7 +96,8 @@ export function runFileSync(filePath: string) {
     bundle: true,
     outdir: path.resolve(__dirname, 'out'),
     sourcemap: true,
-    allowOverwrite: true
+    allowOverwrite: true,
+    external: ['esbuild']
   })
   filePath = filePath.split(path.sep).pop() as string
   const ext = path.extname(filePath)

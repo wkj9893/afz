@@ -1,11 +1,11 @@
-function isKeyedCollection(x: any): boolean {
-  return [Symbol.iterator, 'size'].every((k) => k in x)
+function isKeyedCollection(x: unknown): x is Set<unknown> {
+  return [Symbol.iterator, 'size'].every((k) => k in (x as Set<unknown>))
 }
 
-export function equal(a: any, b: any): boolean {
+export function equal(a: unknown, b: unknown): boolean {
   const seen = new Map()
   return compare(a, b)
-  function compare(a: any, b: any): boolean {
+  function compare(a: unknown, b: unknown): boolean {
     // Have to render RegExp & Date for string comparison
     // unless it's mistreated as object
     if (
@@ -51,8 +51,9 @@ export function equal(a: any, b: any): boolean {
         }
 
         let unmatchedEntries = a.size
-
+        // @ts-ignore
         for (const [aKey, aValue] of a.entries()) {
+          // @ts-ignore
           for (const [bKey, bValue] of b.entries()) {
             /* Given that Map keys can be references, we need
              * to ensure that they are also deeply equal */
@@ -68,6 +69,7 @@ export function equal(a: any, b: any): boolean {
         ...Object.getOwnPropertyNames(merged),
         ...Object.getOwnPropertySymbols(merged)
       ]) {
+        // @ts-ignore
         if (!compare(a[key], b[key])) {
           return false
         }
