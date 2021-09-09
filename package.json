@@ -1,6 +1,6 @@
 {
   "name": "afz",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "test",
   "main": "index.js",
   "types": "index.d.ts",
@@ -8,21 +8,22 @@
   "license": "MIT",
   "homepage": "https://github.com/wkj9893/afz#readme",
   "bin": {
-    "afz": "index.js"
+    "afz": "cli.js"
   },
   "files": [
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+    "cli.js"
   ],
   "engines": {
     "node": ">=12.12.0"
   },
   "scripts": {
-    "test": "rm -rf out && node index.js",
+    "test": "rm -rf out && node cli.js",
     "lint": "deno lint src test index.ts",
     "format": "prettier --write '**/*.ts'",
-    "watch": "esbuild index.ts --bundle --platform=node --watch --outfile=index.js --external:esbuild",
-    "build": "esbuild index.ts --bundle --platform=node --outfile=index.js --external:esbuild",
+    "watch": "esbuild src/cli.ts --bundle --platform=node --outfile=cli.js --external:esbuild",
+    "build": "node scripts/build.js",
     "prepublish": "pnpm build"
   },
   "dependencies": {

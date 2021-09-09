@@ -2,6 +2,7 @@ import fs = require('fs')
 import path = require('path')
 import esbuild = require('esbuild')
 import { spawn, spawnSync } from 'child_process'
+import { getExternal } from './external'
 
 export function match(filePath: string): boolean {
   const ext = path.extname(filePath)
@@ -50,7 +51,10 @@ export function findPaths(dir: string): string[] {
   }
 }
 
-export async function runFile(filePath: string): Promise<string> {
+export async function runTest(
+  filePath: string,
+  external: string[]
+): Promise<string> {
   await esbuild.build({
     entryPoints: [filePath],
     platform: 'node',
@@ -58,7 +62,7 @@ export async function runFile(filePath: string): Promise<string> {
     outdir: path.resolve(__dirname, 'out'),
     sourcemap: true,
     allowOverwrite: true,
-    external: ['esbuild']
+    external
   })
   filePath = filePath.split(path.sep).pop() as string
   const ext = path.extname(filePath)
@@ -97,7 +101,7 @@ export function runFileSync(filePath: string) {
     outdir: path.resolve(__dirname, 'out'),
     sourcemap: true,
     allowOverwrite: true,
-    external: ['esbuild']
+    external: getExternal(filePath)
   })
   filePath = filePath.split(path.sep).pop() as string
   const ext = path.extname(filePath)

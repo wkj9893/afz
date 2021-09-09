@@ -10,5 +10,3 @@ assertEqual(match('test.go'), false)
 assertEqual(match('hello_test.ts'), true)
 assertEqual(match('hello.test.ts'), true)
 assertEqual(match('hello-test.ts'), false)
-
-assertEqual([1, 34, 2], { a: 2 }, 'weq')
