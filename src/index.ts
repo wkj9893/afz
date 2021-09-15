@@ -61,7 +61,6 @@ export async function runTest(
     bundle: true,
     outdir: path.resolve(__dirname, 'out'),
     sourcemap: true,
-    allowOverwrite: true,
     external
   })
   filePath = filePath.split(path.sep).pop() as string
@@ -100,7 +99,6 @@ export function runFileSync(filePath: string) {
     bundle: true,
     outdir: path.resolve(__dirname, 'out'),
     sourcemap: true,
-    allowOverwrite: true,
     external: getExternal(filePath)
   })
   filePath = filePath.split(path.sep).pop() as string
