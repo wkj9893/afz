@@ -31,22 +31,20 @@ export function findPaths(dir: string): string[] {
   return res
 
   function find(dir: string) {
-    for (const filePath of fs.readdirSync(dir)) {
-      //  skip dotfiles
-      if (filePath.startsWith(`.`)) {
+    for (const fileName of fs.readdirSync(dir)) {
+      //  skip dotfiles and node_modules
+      if (fileName.startsWith(`.`) || fileName === 'node_modules') {
         continue
       }
-      if (fs.statSync(path.resolve(dir, filePath)).isFile()) {
-        if (match(filePath)) {
-          res.push(path.resolve(dir, filePath))
-        }
-      } else {
-        //  skip node_modules
-        if (filePath === 'node_modules') {
+      const filePath = path.resolve(dir, fileName)
+      const stat = fs.statSync(filePath)
+      if (stat.isFile() && match(fileName)) {
+          res.push(filePath)
           continue
-        }
-        find(path.resolve(dir, filePath))
       }
+      if(stat.isDirectory()){
+        find(path.resolve(dir, fileName))
+      } 
     }
   }
 }
