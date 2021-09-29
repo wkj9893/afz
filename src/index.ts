@@ -39,12 +39,12 @@ export function findPaths(dir: string): string[] {
       const filePath = path.resolve(dir, fileName)
       const stat = fs.statSync(filePath)
       if (stat.isFile() && match(fileName)) {
-          res.push(filePath)
-          continue
+        res.push(filePath)
+        continue
       }
-      if(stat.isDirectory()){
-        find(path.resolve(dir, fileName))
-      } 
+      if (stat.isDirectory()) {
+        find(filePath)
+      }
     }
   }
 }
