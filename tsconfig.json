@@ -3,6 +3,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true
   }
 }

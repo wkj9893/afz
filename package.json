@@ -1,6 +1,6 @@
 {
   "name": "afz",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "test",
   "main": "index.js",
   "types": "index.d.ts",
@@ -23,7 +23,7 @@
     "lint": "deno lint src test index.ts",
     "format": "prettier --write '**/*.ts'",
     "watch": "esbuild src/cli.ts --bundle --platform=node --outfile=cli.js --external:esbuild",
-    "build": "node scripts/build.js"
+    "build": "afz scripts/build.ts"
   },
   "dependencies": {
     "esbuild": "^0.13.2"

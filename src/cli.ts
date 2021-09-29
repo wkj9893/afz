@@ -44,8 +44,11 @@ async function cli() {
     )
   } else {
     for (const arg of args) {
-      const filepath = path.resolve(process.cwd(), arg)
-      runFileSync(filepath)
+      if (path.isAbsolute(arg)) {
+        runFileSync(arg)
+      } else {
+        runFileSync(path.resolve(process.cwd(), arg))
+      }
     }
   }
 }
