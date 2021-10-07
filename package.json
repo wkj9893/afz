@@ -1,9 +1,6 @@
 {
   "name": "afz",
   "version": "0.1.4",
-  "description": "test",
-  "main": "index.js",
-  "types": "index.d.ts",
   "author": "wkj",
   "license": "MIT",
   "homepage": "https://github.com/wkj9893/afz#readme",
@@ -20,29 +17,22 @@
   },
   "scripts": {
     "test": "rm -rf out && node cli.js",
-    "lint": "deno lint src test index.ts",
-    "format": "prettier --write '**/*.ts'",
-    "watch": "esbuild src/cli.ts --bundle --platform=node --outfile=cli.js --external:esbuild",
-    "build": "afz scripts/build.ts"
+    "lint": "deno lint src",
+    "fmt": "deno fmt src",
+    "watch": "esbuild src/cli.ts --bundle --platform=node --outfile=cli.js --external:esbuild --watch",
+    "build": "esbuild src/cli.ts --bundle --platform=node --outfile=cli.js --format=esm --external:esbuild"
   },
   "dependencies": {
-    "esbuild": "^0.13.2"
+    "esbuild": "^0.13.3"
   },
   "devDependencies": {
-    "@types/node": "^16.10.1",
-    "@wkj9893/prettier-config": "^1.0.1",
-    "prettier": "^2.4.1",
-    "typescript": "^4.4.3"
+    "@types/node": "^16.10.2"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wkj9893/afz.git"
   },
-  "keywords": [
-    "test"
-  ],
   "bugs": {
     "url": "https://github.com/wkj9893/afz/issues"
-  },
-  "prettier": "@wkj9893/prettier-config"
+  }
 }

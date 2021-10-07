@@ -1,110 +1,59 @@
-import fs = require('fs')
-import path = require('path')
-import esbuild = require('esbuild')
-import { spawn, spawnSync } from 'child_process'
-import { getExternal } from './external'
+// deno-lint-ignore-file no-explicit-any
+import path from "path";
+import esbuild from "esbuild";
+import Module from "module";
+import { getExternal } from "./external";
+import fs from "fs";
+import os from "os";
 
-export function match(filePath: string): boolean {
-  const ext = path.extname(filePath)
-  if (!['.js', '.mjs', '.ts', '.jsx', '.tsx'].includes(ext)) {
-    return false
-  }
-  const end = filePath.length - ext.length
-  if (end < 4) {
-    return false
-  }
-  if (filePath.slice(end - 4, end) === 'test') {
-    if (end == 4 || filePath[end - 5] === '_' || filePath[end - 5] === '.') {
-      return true
-    }
-  }
-  return false
-}
-
-/**
- * @param dir root dir
- * @returns all filepaths under dir matching the glob {*_,*.,}test.{js,mjs,ts,jsx,tsx}
- */
-export function findPaths(dir: string): string[] {
-  const res: string[] = []
-  find(dir)
-  return res
-
-  function find(dir: string) {
-    for (const fileName of fs.readdirSync(dir)) {
-      //  skip dotfiles and node_modules
-      if (fileName.startsWith(`.`) || fileName === 'node_modules') {
-        continue
-      }
-      const filePath = path.resolve(dir, fileName)
-      const stat = fs.statSync(filePath)
-      if (stat.isFile() && match(fileName)) {
-        res.push(filePath)
-        continue
-      }
-      if (stat.isDirectory()) {
-        find(filePath)
-      }
-    }
-  }
-}
-
-export async function runTest(
-  filePath: string,
-  external: string[]
-): Promise<string> {
-  await esbuild.build({
-    entryPoints: [filePath],
-    platform: 'node',
-    bundle: true,
-    outdir: path.resolve(__dirname, 'out'),
-    sourcemap: true,
-    external
-  })
-  filePath = filePath.split(path.sep).pop() as string
-  const ext = path.extname(filePath)
-  const fileName = filePath.slice(0, filePath.length - ext.length) + '.js'
-  const run = spawn(process.execPath, [
-    '--enable-source-maps',
-    path.resolve(__dirname, 'out', fileName)
-  ])
-  let stdout = ''
-  return new Promise((resolve, reject) => {
-    run.stdout.on('data', (data) => {
-      stdout += data.toString()
-    })
-    run.stderr.on('data', (data) => {
-      if (stdout) {
-        console.log()
-        console.log('----------     stdout     ----------')
-        console.log(stdout)
-      }
-      reject(data.toString())
-    })
-    run.on('error', (err) => {
-      reject(err)
-    })
-    run.on('close', () => {
-      resolve('')
-    })
-  })
-}
-
-export function runFileSync(filePath: string) {
+export function run(filePath: string) {
+  const fileName = filePath.split(path.sep).pop() as string;
+  const outdir = os.tmpdir();
+  const outfile = path.resolve(outdir, fileName);
   esbuild.buildSync({
     entryPoints: [filePath],
-    platform: 'node',
+    platform: "node",
+    format: "cjs",
     bundle: true,
-    outdir: path.resolve(__dirname, 'out'),
-    sourcemap: true,
-    external: getExternal(filePath)
-  })
-  filePath = filePath.split(path.sep).pop() as string
-  const ext = path.extname(filePath)
-  const fileName = filePath.slice(0, filePath.length - ext.length) + '.js'
-  spawnSync(
-    process.execPath,
-    ['--enable-source-maps', path.resolve(__dirname, 'out', fileName)],
-    { stdio: 'inherit' }
-  )
+    outfile,
+    sourcemap: "inline",
+    external: getExternal(filePath),
+  });
+
+  process.argv = [process.execPath, filePath];
+  // @ts-ignore
+  process.setSourceMapsEnabled(true);
+  registerExtensions(
+    filePath,
+    path.resolve(
+      outdir,
+      fileName.slice(0, fileName.length - path.extname(fileName).length) +
+        ".js",
+    ),
+  );
+  Module.runMain();
+}
+
+function registerExtensions(src: string, dest: string) {
+  const old = (Module as any)._extensions[".js"];
+  (Module as any)
+    ._extensions[".js"] = (module: any, filename: string) => {
+      module._compile.cjsSourceMapCache = {};
+      if (filename === src) {
+        const content = fs.readFileSync("/root/test/world.js", "utf-8");
+        module._compile(content, filename);
+      } else {
+        old(module, filename);
+      }
+    };
+  const fn = (
+    module: any,
+    filename: string,
+  ) => {
+    const content = fs.readFileSync(dest, "utf-8");
+    module._compile(content, filename);
+  };
+  (Module as any)._extensions[".ts"] = fn;
+  (Module as any)._extensions[".tsx"] = fn;
+  (Module as any)._extensions[".jsx"] = fn;
 }
